@@ -1,77 +1,24 @@
-# CFLAGS = -std=c++17 -O2
-# LDFLAGS = -lglfw -lvulkan -ldl -lpthread -lX11 -lXxf86vm -lXrandr -lXi
+CFLAGS = -std=c++17 -O2
+LDFLAGS = -lglfw -lvulkan -ldl -lpthread -lX11 -lXxf86vm -lXrandr -lXi -I./VkHandlers -I./GLFW -I./
 
-# DEBUGFLAGS = -g3
+GLFW_SRC = GLFW/Window.cpp
 
-# FILES = main.cpp Vulkan/*.cpp
+VK_SRC = VkHandlers/Instance.cpp
 
-# NAME = arcade_vulkan.so
+SRC = main.cpp \
+		Renderer.cpp \
+		$(GLFW_SRC) \
+		$(VK_SRC)
 
-# SHADERS = vert.spv frag.spv
+NAME = Test
 
-# all: main.cpp
-# 	g++ $(CFLAGS) -o $(NAME) $(FILES) $(LDFLAGS)
-# 	./compile.sh
-# 	mv $(NAME) ../../lib
+all: $(SRC)
+	g++ $(CFLAGS) -o $(NAME) $(SRC) $(LDFLAGS)
 
-# .PHONY: test clean
+.PHONY: run clean
 
-# clean:
-# 	rm -f $(NAME) $(SHADERS)
+run: all
+	./Test
 
-# fclean:
-# 	clean
-
-# re: clean all
-
-
-#
-# agawga
-#
-
-NAME	=	arcade_vulkan.so
-
-LDFLAGS = -std=c++17 -O2 -Wall -Wextra -Werror -shared -I../../Header
-
-CXXFLAGS += -L../../Utils -lglfw -lvulkan -ldl -lpthread -lX11 -lXxf86vm -lXrandr -lXi -fPIC
-
-CC	=	g++
-
-SRC	=	Vulkan/CommandManager.cpp \
-		Vulkan/DebugMessenger.cpp \
-		Vulkan/Instance.cpp \
-		Vulkan/LogicalDevice.cpp \
-		Vulkan/Operator.cpp \
-		Vulkan/PhysicalDevice.cpp \
-		Vulkan/Pipeline.cpp \
-		Vulkan/QueueFamilyIndices.cpp \
-		Vulkan/Surface.cpp \
-		Vulkan/SwapChain.cpp \
-		Vulkan/Utils.cpp \
-		Vulkan/Vertex.cpp \
-		Vulkan/VertexBuffer.cpp \
-		Vulkan/Window.cpp \
-		Renderer.cpp
-
-RM = rm -f
-
-OBJ	= $(SRC:.cpp=.o)
-
-SHADERS = vert.spv frag.spv
-
-all: $(OBJ)
-	$(CC) $(LDFLAGS) $(CXXFLAGS) $(OBJ) -o $(NAME)
-	./compile.sh
-	mkdir -p ../lib
-	mv $(NAME) ../lib
-
-clean:
-	$(RM) $(OBJ)
-
-fclean: clean
-	$(RM) ../lib/$(NAME)
-	$(RM) $(SHADERS)
-
-re: fclean all
-
-.PHONY: all clean fclean re
+clean: \
+    rm -f Test
